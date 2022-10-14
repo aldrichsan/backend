@@ -1,16 +1,16 @@
 import express from "express";
 import { getStudents, StudentRegister, StudentLogin, StudentLogout } from "../controllers/Students.js";
-import { verifyToken } from "../middleware/VerifyToken.js";
+import { StudentVerifyToken } from "../middleware/StudentVerifyToken.js";
 import { StudentRefreshToken } from "../controllers/StudentRefreshToken.js";
  
 const router = express.Router();
  
 
 
-router.get('/student/home', verifyToken, getStudents);
 router.post('/register/student', StudentRegister);
 router.post('/student', StudentLogin);
-router.get('/token', StudentRefreshToken);
+router.get('/student/token', StudentRefreshToken);
+router.get('/student/home', StudentVerifyToken, getStudents);
 router.delete('/student/logout', StudentLogout);
  
 

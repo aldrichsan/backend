@@ -47,12 +47,13 @@ export const StudentLogin = async(req, res) => {
         const match = await bcrypt.compare(req.body.password, student[0].password);
         if(!match) return res.status(400).json({msg: "Wrong Password"});
         const studentId = student[0].student_id;
+        const first_name = student[0].first_name;
         const last_name = student[0].last_name;
         const email = student[0].email;
-        const accessToken = jwt.sign({studentId, last_name, email}, process.env.ACCESS_TOKEN_SECRET,{
+        const accessToken = jwt.sign({studentId, first_name, last_name, email}, process.env.ACCESS_TOKEN_SECRET,{
             expiresIn: '15s'
         });
-        const refreshToken = jwt.sign({studentId, last_name, email}, process.env.REFRESH_TOKEN_SECRET,{
+        const refreshToken = jwt.sign({studentId, first_name, last_name, email}, process.env.REFRESH_TOKEN_SECRET,{
             expiresIn: '1d'
         });
         await Students.update({refresh_token: refreshToken},{
