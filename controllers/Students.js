@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 export const getStudents = async(req, res) => {
     try {
         const student = await Students.findAll({
-            attributes:['student_id','first_name','email']
+            attributes:['student_id','last_name','first_name','middle_name', 'contact_no', 'email', 'department', 'course', 'year']
         });
         res.json(student);
     } catch (error) {
