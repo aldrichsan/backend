@@ -1,11 +1,23 @@
 import Deans from "../models/DeanModel.js";
+import PendingDeans from "../models/PendingDeanModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
  
 export const getDeans = async(req, res) => {
     try {
         const dean = await Deans.findAll({
-            attributes:['dean_id','first_name','email']
+            attributes:['id','dean_id','last_name','middle_name', 'first_name', 'email', 'contact_no', 'department']
+        });
+        res.json(dean);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getPendingDeans = async(req, res) => {
+    try {
+        const dean = await PendingDeans.findAll({
+            attributes:['id', 'dean_id','last_name','first_name','middle_name', 'contact_no', 'email', 'department', 'password']
         });
         res.json(dean);
     } catch (error) {
@@ -14,12 +26,12 @@ export const getDeans = async(req, res) => {
 }
  
 export const DeanRegister = async(req, res) => {
-    const { last_name, first_name, middle_name, contact_no, email, department, course, year, dean_id, password, confPassword } = req.body;
+    const { last_name, first_name, middle_name, contact_no, email, department, dean_id, password, confPassword } = req.body;
     if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
     try {
-        await Deans.create({
+        await PendingDeans.create({
             last_name: last_name,
             first_name: first_name,
             middle_name: middle_name,
@@ -29,6 +41,25 @@ export const DeanRegister = async(req, res) => {
             year: year,
             dean_id: dean_id,
             password: hashPassword
+        });
+        res.json({msg: "Registration sent for Approval"});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const ApproveDeanRegister = async(req, res) => {
+    const { last_name, first_name, middle_name, contact_no, email, department, dean_id, password} = req.body;
+    try {
+        await Deans.create({
+            last_name: last_name,
+            first_name: first_name,
+            middle_name: middle_name,
+            contact_no: contact_no,
+            email: email,
+            department: department,
+            dean_id: dean_id,
+            password: password
         });
         res.json({msg: "Registration Successful"});
     } catch (error) {
@@ -68,6 +99,34 @@ export const DeanLogin = async(req, res) => {
     } catch (error) {
         res.status(404).json({msg:"Dean ID not found"});
     }
+}
+
+export const UpdateDean = async (req, res) => {
+    try {
+        await Deans.update(req.body, {
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
+export const DeleteDean= async (req, res) => {
+    try {
+        await Deans.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            "message": "Dean Deleted"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
 }
  
 export const DeanLogout = async(req, res) => {

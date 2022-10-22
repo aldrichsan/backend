@@ -1,11 +1,23 @@
 import Students from "../models/StudentModel.js";
+import PendingStudents from "../models/PendingStudentModel.js" 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
  
 export const getStudents = async(req, res) => {
     try {
         const student = await Students.findAll({
-            attributes:['student_id','last_name','first_name','middle_name', 'contact_no', 'email', 'department', 'course', 'year']
+            attributes:['id', 'student_id','last_name','first_name','middle_name', 'contact_no', 'email', 'department', 'course', 'year']
+        });
+        res.json(student);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getPendingStudents = async(req, res) => {
+    try {
+        const student = await PendingStudents.findAll({
+            attributes:['id', 'student_id','last_name','first_name','middle_name', 'contact_no', 'email', 'department', 'course', 'year', 'password']
         });
         res.json(student);
     } catch (error) {
@@ -19,7 +31,7 @@ export const StudentRegister = async(req, res) => {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
     try {
-        await Students.create({
+        await PendingStudents.create({
             last_name: last_name,
             first_name: first_name,
             middle_name: middle_name,
@@ -31,11 +43,33 @@ export const StudentRegister = async(req, res) => {
             student_id: student_id,
             password: hashPassword
         });
+        res.json({msg: "Registration sent for Approval"});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const ApproveStudentRegister = async(req, res) => {
+    const { last_name, first_name, middle_name, contact_no, email, department, course, year, student_id, password} = req.body;
+    try {
+        await Students.create({
+            last_name: last_name,
+            first_name: first_name,
+            middle_name: middle_name,
+            contact_no: contact_no,
+            email: email,
+            department: department,
+            course: course,
+            year: year,
+            student_id: student_id,
+            password: password
+        });
         res.json({msg: "Registration Successful"});
     } catch (error) {
         console.log(error);
     }
 }
+
  
 export const StudentLogin = async(req, res) => {
     try {
@@ -70,6 +104,36 @@ export const StudentLogin = async(req, res) => {
         res.status(404).json({msg:"Student ID not found"});
     }
 }
+
+
+export const UpdateStudent = async (req, res) => {
+    try {
+        await Students.update(req.body, {
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
+export const DeleteStudent= async (req, res) => {
+    try {
+        await Students.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            "message": "Student Deleted"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
+}
+
  
 export const StudentLogout = async(req, res) => {
     const refreshToken = req.cookies.refreshToken;
