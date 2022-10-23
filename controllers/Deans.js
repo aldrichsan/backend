@@ -38,7 +38,6 @@ export const DeanRegister = async(req, res) => {
             contact_no: contact_no,
             email: email,
             department: department,
-            year: year,
             dean_id: dean_id,
             password: hashPassword
         });
@@ -66,6 +65,22 @@ export const ApproveDeanRegister = async(req, res) => {
         console.log(error);
     }
 }
+
+export const RejectPendingDean = async (req, res) => {
+    try {
+        await PendingDeans.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            "message": "Pending Dean Rejected"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
+}
+
  
 export const DeanLogin = async(req, res) => {
     try {
@@ -114,7 +129,7 @@ export const UpdateDean = async (req, res) => {
     }  
 }
 
-export const DeleteDean= async (req, res) => {
+export const DeleteDean = async (req, res) => {
     try {
         await Deans.destroy({
             where: {

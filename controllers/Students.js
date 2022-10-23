@@ -70,6 +70,21 @@ export const ApproveStudentRegister = async(req, res) => {
     }
 }
 
+export const RejectPendingStudent = async (req, res) => {
+    try {
+        await PendingStudents.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            "message": "Pending Student Rejected"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
+}
+
  
 export const StudentLogin = async(req, res) => {
     try {
@@ -119,7 +134,7 @@ export const UpdateStudent = async (req, res) => {
     }  
 }
 
-export const DeleteStudent= async (req, res) => {
+export const DeleteStudent = async (req, res) => {
     try {
         await Students.destroy({
             where: {

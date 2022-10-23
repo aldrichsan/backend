@@ -13,6 +13,7 @@ export const StudentRefreshToken = async(req, res) => {
         if(!student[0]) return res.sendStatus(403);
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
             if(err) return res.sendStatus(403);
+            
             const studentId = student[0].student_id;
             const first_name = student[0].first_name;
             const last_name = student[0].last_name;
