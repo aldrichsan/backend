@@ -27,6 +27,19 @@ export const getPendingStudents = async(req, res) => {
  
 export const StudentRegister = async(req, res) => {
     const { last_name, first_name, middle_name, contact_no, email, department, course, year, student_id, password, confPassword } = req.body;
+    const isStudentUnique = await Students.findOne({where: {student_id: student_id}});
+    if (isStudentUnique !== null) return res.status(400).json({msg: "Student ID is already used"});
+    if (student_id.length < 5) return res.status(400).json({msg: "Enter a valid Student ID"});
+    if (last_name.length < 1) return res.status(400).json({msg: "Enter a valid last name"});
+    if (first_name.length < 1) return res.status(400).json({msg: "Enter a valid first name"});
+    if (middle_name.length < 1) return res.status(400).json({msg: "Enter a valid middle name"});
+    if (contact_no.length < 11) return res.status(400).json({msg: "Enter a valid contact no"});
+    if (!email.includes("@")) return res.status(400).json({msg: "Enter a valid email"});
+    if (department.length < 1) return res.status(400).json({msg: "Enter a valid department"});
+    if (course.length < 1) return res.status(400).json({msg: "Enter a valid course"});
+    if (year.length < 1) return res.status(400).json({msg: "Enter a valid year"});
+    
+    if(password.length < 8) return res.status(400).json({msg: "Password must be at least 8 characters"});
     if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
@@ -69,6 +82,7 @@ export const ApproveStudentRegister = async(req, res) => {
         console.log(error);
     }
 }
+
 
 export const RejectPendingStudent = async (req, res) => {
     try {
@@ -118,6 +132,29 @@ export const StudentLogin = async(req, res) => {
     } catch (error) {
         res.status(404).json({msg:"Student ID not found"});
     }
+}
+
+export const getStudentDetails = async(req, res) => {
+    try {
+        const student = await Students.findOne({ where: {student_id : req.params.id}
+        });
+        res.json(student);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const EditStudentDetails = async (req, res) => {
+    try {
+        await Students.update(req.body, {
+            where: {
+                student_id: req.params.id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
 }
 
 

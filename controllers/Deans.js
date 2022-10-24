@@ -116,6 +116,29 @@ export const DeanLogin = async(req, res) => {
     }
 }
 
+export const getDeanDetails = async(req, res) => {
+    try {
+        const dean = await Deans.findOne({ where: {dean_id : req.params.id}
+        });
+        res.json(dean);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const EditDeanDetails = async (req, res) => {
+    try {
+        await Deans.update(req.body, {
+            where: {
+                dean_id: req.params.id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
 export const UpdateDean = async (req, res) => {
     try {
         await Deans.update(req.body, {
