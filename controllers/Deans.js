@@ -185,3 +185,20 @@ export const DeanLogout = async(req, res) => {
     res.clearCookie('refreshToken');
     return res.sendStatus(200);
 }
+
+export const DeanChangePassword = async (req, res) => {
+    const {password, confPassword} = req.body
+    if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+    try {
+        await Deans.update({password: hashPassword}, {
+            where: {
+                dean_id: req.params.id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}

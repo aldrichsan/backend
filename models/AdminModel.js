@@ -19,9 +19,6 @@ const Admins = db.define('admins',{
     email:{
         type: DataTypes.STRING
     },
-    department:{
-        type: DataTypes.STRING
-    },
     admin_id:{
         type: DataTypes.STRING
     },

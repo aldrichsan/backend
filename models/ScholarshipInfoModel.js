@@ -3,7 +3,7 @@ import db from "../config/Database.js";
  
 const { DataTypes } = Sequelize;
  
-const Announcements = db.define('announcements',{
+const ScholarshipInfo = db.define('scholarships',{
     scholarship_name:{
         type: DataTypes.STRING
     },
@@ -21,4 +21,4 @@ const Announcements = db.define('announcements',{
     await db.sync();
 })();
  
-export default Announcements;
+export default ScholarshipInfo;

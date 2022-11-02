@@ -205,3 +205,21 @@ export const StudentLogout = async(req, res) => {
     res.clearCookie('refreshToken');
     return res.sendStatus(200);
 }
+
+
+export const StudentChangePassword = async (req, res) => {
+    const {password, confPassword} = req.body
+    if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+    try {
+        await Students.update({password: hashPassword}, {
+            where: {
+                student_id: req.params.id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}

@@ -1,6 +1,8 @@
 import Admins from "../models/AdminModel.js" 
+import Announcements from "../models/AnnouncementModel.js" 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import ScholarshipInfo from "../models/ScholarshipInfoModel.js";
  
  
 export const AdminRegister = async(req, res) => {
@@ -13,8 +15,6 @@ export const AdminRegister = async(req, res) => {
     if (middle_name.length < 1) return res.status(400).json({msg: "Enter a valid middle name"});
     if (contact_no.length < 11) return res.status(400).json({msg: "Enter a valid contact no"});
     if (!email.includes("@")) return res.status(400).json({msg: "Enter a valid email"});
-    
-    if(password.length < 8) return res.status(400).json({msg: "Password must be at least 8 characters"});
     if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
@@ -86,4 +86,129 @@ export const AdminLogout = async(req, res) => {
     });
     res.clearCookie('refreshToken');
     return res.sendStatus(200);
+}
+
+
+// Announcements
+
+export const AddAnnouncements = async(req, res) => {
+    const {title, body} = req.body;
+    try {
+        await Announcements.create({
+            title: title,
+            body: body
+        });
+        res.json({msg: "Added an announcements"});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const GetAnnouncements = async(req, res) => {
+    try {
+        const announcements = await Announcements.findAll({
+            attributes:['id', 'title','body']
+        });
+        res.json(announcements).status(200)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const UpdateAnnouncement = async (req, res) => {
+    try {
+        await Announcements.update(req.body, {
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
+export const DeleteAnnouncement = async (req, res) => {
+    try {
+        await Announcements.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            "message": "Announcement Deleted"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
+}
+
+
+// Scholarship Informations
+
+export const AddScholarships = async(req, res) => {
+    const {scholarship_name, description, requirements} = req.body;
+    try {
+        await ScholarshipInfo.create({
+            scholarship_name: scholarship_name,
+            description: description,
+            requirements: requirements
+        });
+        res.json({msg: "Added an announcements"});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const GetScholarships = async(req, res) => {
+    try {
+        const scholarships = await ScholarshipInfo.findAll({
+            attributes:['id', 'scholarship_name', 'description', 'requirements']
+        });
+        res.json(scholarships).status(200)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const GetScholarship = async(req, res) => {
+    try {
+        const scholarships = await ScholarshipInfo.findOne({
+            attributes:['id', 'scholarship_name', 'description', 'requirements'],
+            where:{
+                scholarship_name: req.params.id
+            }
+        });
+        res.json(scholarships).status(200)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const UpdateScholarship = async (req, res) => {
+    try {
+        await ScholarshipInfo.update(req.body, {
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
+export const DeleteScholarship = async (req, res) => {
+    try {
+        await ScholarshipInfo.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            "message": "Scholarship Deleted"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
 }
