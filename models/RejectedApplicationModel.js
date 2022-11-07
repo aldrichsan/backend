@@ -1,16 +1,20 @@
-import { Sequelize } from "sequelize";
+import { INTEGER, Sequelize, STRING, TEXT } from "sequelize";
 import db from "../config/Database.js";
  
 const { DataTypes } = Sequelize;
  
-const Students = db.define('students',{
-    last_name:{
+const RejectedApplications = db.define('rejected_applications',{
+    id:{
+        type: INTEGER,
+        primaryKey: true
+    },
+    student_id:{
         type: DataTypes.STRING
     },
     first_name:{
         type: DataTypes.STRING
     },
-    middle_name:{
+    last_name:{
         type: DataTypes.STRING
     },
     contact_no:{
@@ -22,19 +26,10 @@ const Students = db.define('students',{
     department:{
         type: DataTypes.STRING
     },
-    course:{
+    rejected_by:{
         type: DataTypes.STRING
     },
-    year:{
-        type: DataTypes.INTEGER
-    },
-    student_id:{
-        type: DataTypes.STRING
-    },
-    password:{
-        type: DataTypes.STRING
-    },
-    refresh_token:{
+    reason_of_rejection:{
         type: DataTypes.TEXT
     }
 },{
@@ -45,4 +40,4 @@ const Students = db.define('students',{
     await db.authenticate();
 })();
  
-export default Students;
+export default RejectedApplications;

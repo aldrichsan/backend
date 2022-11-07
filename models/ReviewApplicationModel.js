@@ -3,7 +3,14 @@ import db from "../config/Database.js";
  
 const { DataTypes } = Sequelize;
  
-const SubmittedApplications = db.define('submitted_applications',{
+const ReviewApplications = db.define('review_applications',{
+    id:{
+        type: INTEGER,
+        primaryKey: true
+    },
+    date_submitted:{
+        type: DataTypes.STRING
+    },
     student_id:{
         type: DataTypes.STRING
     },
@@ -38,13 +45,13 @@ const SubmittedApplications = db.define('submitted_applications',{
         type: DataTypes.STRING
     },
     student_sign:{
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT('medium')
     },
     dean_sign:{
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT('medium')
     },
     admin_sign:{
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT('medium')
     },
     scholarship_type:{
         type: DataTypes.STRING
@@ -156,7 +163,7 @@ const SubmittedApplications = db.define('submitted_applications',{
 });
  
 (async () => {
-    await db.sync();
+    await db.authenticate();
 })();
  
-export default SubmittedApplications;
+export default ReviewApplications;

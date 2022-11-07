@@ -1,5 +1,6 @@
-import Students from "../models/StudentModel.js";
+import Students from "../models/StudentModel.js"
 import PendingStudents from "../models/PendingStudentModel.js" 
+import SubmittedApplications from "../models/SubmittedApplicationModel.js"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
  
@@ -219,6 +220,113 @@ export const StudentChangePassword = async (req, res) => {
             }
         });
         res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
+export const CreateScholarshipApplication = async (req, res) => {
+    const { 
+        last_name, 
+        first_name, 
+        middle_name, 
+        contact_no, 
+        email, 
+        department, 
+        course, 
+        year, 
+        semester, 
+        school_year, 
+        student_id,
+        student_sign,
+        scholarship_type,
+        subj_1,
+        subj_2,
+        subj_3,
+        subj_4,
+        subj_5,
+        subj_6,
+        subj_7,
+        subj_8,
+        subj_9,
+        subj_10,
+        subj_11,
+        subj_12,
+        units_1,
+        units_2,
+        units_3,
+        units_4,
+        units_5,
+        units_6,
+        units_7,
+        units_8,
+        units_9,
+        units_10,
+        units_11,
+        units_12,
+        req_1,
+        req_2,
+        req_3,
+        req_4,
+        req_5,
+        req_6,
+        req_7,
+        req_8,
+        req_9,
+        req_10
+    } = req.body;
+    
+    try {
+        await SubmittedApplications.create({
+            last_name: last_name, 
+            first_name: first_name, 
+            middle_name: middle_name, 
+            contact_no: contact_no, 
+            email: email, 
+            department: department, 
+            course: course, 
+            year: year,
+            semester: semester,
+            school_year: school_year,
+            student_id: student_id,
+            student_sign: student_sign,
+            scholarship_type: scholarship_type,
+            subj_1: subj_1,
+            subj_2: subj_2,
+            subj_3: subj_3,
+            subj_4: subj_4,
+            subj_5: subj_5,
+            subj_6: subj_6,
+            subj_7: subj_7,
+            subj_8: subj_8,
+            subj_9: subj_9,
+            subj_10: subj_10,
+            subj_11: subj_11,
+            subj_12: subj_12,
+            units_1: units_1,
+            units_2: units_2,
+            units_3: units_3,
+            units_4: units_4,
+            units_5: units_5,
+            units_6: units_6,
+            units_7: units_7,
+            units_8: units_8,
+            units_9: units_9,
+            units_10: units_10,
+            units_11: units_11,
+            units_12: units_12,
+            req_1: req_1,
+            req_2: req_2,
+            req_3: req_3,
+            req_4: req_4,
+            req_5: req_5,
+            req_6: req_6,
+            req_7: req_7,
+            req_8: req_8,
+            req_9: req_9,
+            req_10: req_10
+        });
+        res.json({msg: "Application has been submitted"});
     } catch (error) {
         res.json({ msg: error.message });
     }  
