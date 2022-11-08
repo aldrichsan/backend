@@ -3,6 +3,9 @@ import PendingStudents from "../models/PendingStudentModel.js"
 import SubmittedApplications from "../models/SubmittedApplicationModel.js"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import RejectedApplications from "../models/RejectedApplicationModel.js";
+import ApprovedApplications from "../models/ApprovedApplications.js";
+import ReviewApplications from "../models/ReviewApplicationModel.js";
  
 export const getStudents = async(req, res) => {
     try {
@@ -65,6 +68,8 @@ export const StudentRegister = async(req, res) => {
 
 export const ApproveStudentRegister = async(req, res) => {
     const { last_name, first_name, middle_name, contact_no, email, department, course, year, student_id, password} = req.body;
+    const isStudentUnique = await Students.findOne({where: {student_id: student_id}});
+    if (isStudentUnique !== null) return res.status(400).json({msg: "Student ID is already used"});
     try {
         await Students.create({
             last_name: last_name,
@@ -93,7 +98,7 @@ export const RejectPendingStudent = async (req, res) => {
             }
         });
         res.json({
-            "message": "Pending Student Rejected"
+            msg: "Pending Student Rejected"
         });
     } catch (error) {
         res.json({ message: error.message });
@@ -146,6 +151,9 @@ export const getStudentDetails = async(req, res) => {
 }
 
 export const EditStudentDetails = async (req, res) => {
+    const {student_id} = req.body;
+    const isStudentUnique = await Students.findOne({where: {student_id: student_id}});
+    if (isStudentUnique !== null) return res.status(400).json({msg: "Student ID is already used"});
     try {
         await Students.update(req.body, {
             where: {
@@ -160,6 +168,9 @@ export const EditStudentDetails = async (req, res) => {
 
 
 export const UpdateStudent = async (req, res) => {
+    const {student_id} = req.body;
+    const isStudentUnique = await Students.findOne({where: {student_id: student_id}});
+    if (isStudentUnique !== null) return res.status(400).json({msg: "Student ID is already used"});
     try {
         await Students.update(req.body, {
             where: {
@@ -209,14 +220,14 @@ export const StudentLogout = async(req, res) => {
 
 
 export const StudentChangePassword = async (req, res) => {
-    const {password, confPassword} = req.body
+    const {student_id, password, confPassword} = req.body
     if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
     try {
         await Students.update({password: hashPassword}, {
             where: {
-                student_id: req.params.id
+                student_id: student_id
             }
         });
         res.json(req.body);
@@ -330,4 +341,58 @@ export const CreateScholarshipApplication = async (req, res) => {
     } catch (error) {
         res.json({ msg: error.message });
     }  
+}
+
+
+export const IsScholarshipRejected = async(req, res) => {
+    try {
+        const application = await RejectedApplications.findAll({
+            where:{
+                student_id: req.params.id
+            }
+        })
+        res.json(application);
+    } catch (error) {
+        res.json({ msg: error.message });
+        console.log(error)
+    }
+}
+export const IsScholarshipApproved = async(req, res) => {
+    try {
+        const application = await ApprovedApplications.findAll({
+            where:{
+                student_id: req.params.id
+            }
+        })
+        res.json(application);
+    } catch (error) {
+        res.json({ msg: error.message });
+        console.log(error)
+    }
+}
+export const IsScholarshipUnderReview = async(req, res) => {
+    try {
+        const application = await ReviewApplications.findAll({
+            where:{
+                student_id: req.params.id
+            }
+        })
+        res.json(application);
+    } catch (error) {
+        res.json({ msg: error.message });
+        console.log(error)
+    }
+}
+export const IsScholarshipSubmitted = async(req, res) => {
+    try {
+        const application = await SubmittedApplications.findAll({
+            where:{
+                student_id: req.params.id
+            }
+        })
+        res.json(application);
+    } catch (error) {
+        res.json({ msg: error.message });
+        console.log(error)
+    }
 }

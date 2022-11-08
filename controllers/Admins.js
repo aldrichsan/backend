@@ -3,6 +3,9 @@ import Announcements from "../models/AnnouncementModel.js"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import ScholarshipInfo from "../models/ScholarshipInfoModel.js";
+import ReviewApplications from "../models/ReviewApplicationModel.js";
+import ApprovedApplications from "../models/ApprovedApplications.js";
+import RejectedApplications from "../models/RejectedApplicationModel.js";
  
  
 export const AdminRegister = async(req, res) => {
@@ -139,7 +142,7 @@ export const DeleteAnnouncement = async (req, res) => {
             "message": "Announcement Deleted"
         });
     } catch (error) {
-        res.json({ message: error.message });
+        res.json({ msg: error.message });
     }  
 }
 
@@ -206,7 +209,307 @@ export const DeleteScholarship = async (req, res) => {
             }
         });
         res.json({
-            "message": "Scholarship Deleted"
+            msg: "Scholarship Deleted"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
+}
+
+
+//Accepting and Rejecting Student's Scholarship Applications
+
+export const GetReviewedApplications = async (req, res) => {
+    const reviewed_applications = await ReviewApplications.findAll({
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetDepartmentFilteredReviewedApplications = async (req, res) => {
+    const reviewed_applications = await ReviewApplications.findAll({
+        where:{
+            department: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetCourseFilteredReviewedApplications = async (req, res) => {
+    const reviewed_applications = await ReviewApplications.findAll({
+        where:{
+            course: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetSpecificReviewedApplication = async (req, res) => {
+    const specific_application = await ReviewApplications.findOne({
+        where:{
+            id: req.params.id
+        }
+    });
+    res.json(specific_application);
+}
+
+export const DeleteReviewedApplication = async (req, res) => {
+    try {
+        await ReviewApplications.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            msg: "Application Deleted"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
+}
+
+
+export const CreateApprovedApplication = async (req, res) => {
+    const { 
+        id,
+        last_name, 
+        first_name, 
+        middle_name, 
+        contact_no, 
+        email, 
+        department, 
+        course, 
+        year, 
+        semester, 
+        school_year, 
+        student_id,
+        student_sign,
+        dean_sign,
+        admin_sign,
+        date_submitted,
+        scholarship_type,
+        subj_1,
+        subj_2,
+        subj_3,
+        subj_4,
+        subj_5,
+        subj_6,
+        subj_7,
+        subj_8,
+        subj_9,
+        subj_10,
+        subj_11,
+        subj_12,
+        units_1,
+        units_2,
+        units_3,
+        units_4,
+        units_5,
+        units_6,
+        units_7,
+        units_8,
+        units_9,
+        units_10,
+        units_11,
+        units_12,
+        req_1,
+        req_2,
+        req_3,
+        req_4,
+        req_5,
+        req_6,
+        req_7,
+        req_8,
+        req_9,
+        req_10
+    } = req.body;
+    
+    try {
+        await ApprovedApplications.create({
+            id: id, 
+            last_name: last_name, 
+            first_name: first_name, 
+            middle_name: middle_name, 
+            contact_no: contact_no, 
+            email: email, 
+            department: department, 
+            course: course, 
+            year: year,
+            semester: semester,
+            school_year: school_year,
+            student_id: student_id,
+            student_sign: student_sign,
+            dean_sign: dean_sign,
+            admin_sign: admin_sign,
+            date_submitted: date_submitted,
+            scholarship_type: scholarship_type,
+            subj_1: subj_1,
+            subj_2: subj_2,
+            subj_3: subj_3,
+            subj_4: subj_4,
+            subj_5: subj_5,
+            subj_6: subj_6,
+            subj_7: subj_7,
+            subj_8: subj_8,
+            subj_9: subj_9,
+            subj_10: subj_10,
+            subj_11: subj_11,
+            subj_12: subj_12,
+            units_1: units_1,
+            units_2: units_2,
+            units_3: units_3,
+            units_4: units_4,
+            units_5: units_5,
+            units_6: units_6,
+            units_7: units_7,
+            units_8: units_8,
+            units_9: units_9,
+            units_10: units_10,
+            units_11: units_11,
+            units_12: units_12,
+            req_1: req_1,
+            req_2: req_2,
+            req_3: req_3,
+            req_4: req_4,
+            req_5: req_5,
+            req_6: req_6,
+            req_7: req_7,
+            req_8: req_8,
+            req_9: req_9,
+            req_10: req_10
+        });
+        res.json({msg: "Application has been Accepted"});
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
+
+export const GetApprovedApplications = async (req, res) => {
+    const reviewed_applications = await ApprovedApplications.findAll({
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetDepartmentFilteredApprovedApplications = async (req, res) => {
+    const reviewed_applications = await ApprovedApplications.findAll({
+        where:{
+            department: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetCourseFilteredApprovedApplications = async (req, res) => {
+    const reviewed_applications = await ApprovedApplications.findAll({
+        where:{
+            course: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetSpecificApprovedApplication = async (req, res) => {
+    const specific_application = await ApprovedApplications.findOne({
+        where:{
+            id: req.params.id
+        }
+    });
+    res.json(specific_application);
+}
+
+export const DeleteApprovedApplication = async (req, res) => {
+    try {
+        await ApprovedApplications.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            msg: "Application Deleted"
+        });
+    } catch (error) {
+        res.json({ message: error.message });
+    }  
+}
+
+export const AdminCreateRejectedApplication = async (req, res) => {
+    const { 
+        id,
+        last_name, 
+        first_name, 
+        contact_no, 
+        email, 
+        department,
+        date_submitted,
+        scholarship_type,
+        rejected_by,
+        reason_of_rejection,
+        student_id
+    } = req.body;
+    
+    try {
+        await RejectedApplications.create({
+            id: id, 
+            student_id: student_id,
+            last_name: last_name, 
+            first_name: first_name, 
+            contact_no: contact_no, 
+            email: email, 
+            department: department, 
+            date_submitted: date_submitted,
+            scholarship_type: scholarship_type,
+            rejected_by: rejected_by,
+            reason_of_rejection: reason_of_rejection
+        });
+        res.json({msg: "Application has been Rejected"});
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
+
+export const GetRejectedApplications = async (req, res) => {
+    const reviewed_applications = await RejectedApplications.findAll({
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetDepartmentFilteredRejectedApplications = async (req, res) => {
+    const reviewed_applications = await RejectedApplications.findAll({
+        where:{
+            department: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetCourseFilteredRejectedApplications = async (req, res) => {
+    const reviewed_applications = await RejectedApplications.findAll({
+        where:{
+            course: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetSpecificRejectedApplication = async (req, res) => {
+    const specific_application = await RejectedApplications.findOne({
+        where:{
+            id: req.params.id
+        }
+    });
+    res.json(specific_application);
+}
+
+export const DeleteRejectedApplication = async (req, res) => {
+    try {
+        await RejectedApplications.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            msg: "Application Deleted"
         });
     } catch (error) {
         res.json({ message: error.message });

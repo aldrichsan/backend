@@ -30,6 +30,17 @@ export const getPendingDeans = async(req, res) => {
  
 export const DeanRegister = async(req, res) => {
     const { last_name, first_name, middle_name, contact_no, email, department, dean_id, password, confPassword } = req.body;
+    const isDeanUnique = await Deans.findOne({where: {dean_id: dean_id}});
+    if (isDeanUnique !== null) return res.status(400).json({msg: "Dean ID is already used"});
+    if (dean_id.length < 5) return res.status(400).json({msg: "Enter a valid Dean ID"});
+    if (last_name.length < 1) return res.status(400).json({msg: "Enter a valid last name"});
+    if (first_name.length < 1) return res.status(400).json({msg: "Enter a valid first name"});
+    if (middle_name.length < 1) return res.status(400).json({msg: "Enter a valid middle name"});
+    if (contact_no.length < 11) return res.status(400).json({msg: "Enter a valid contact no"});
+    if (!email.includes("@")) return res.status(400).json({msg: "Enter a valid email"});
+    if (department.length < 1) return res.status(400).json({msg: "Enter a valid department"});
+    
+    if(password.length < 8) return res.status(400).json({msg: "Password must be at least 8 characters"});
     if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
@@ -52,6 +63,8 @@ export const DeanRegister = async(req, res) => {
 
 export const ApproveDeanRegister = async(req, res) => {
     const { last_name, first_name, middle_name, contact_no, email, department, dean_id, password} = req.body;
+    const isDeanUnique = await Deans.findOne({where: {dean_id: dean_id}});
+    if (isDeanUnique !== null) return res.status(400).json({msg: "Dean ID is already used"});
     try {
         await Deans.create({
             last_name: last_name,
@@ -130,6 +143,9 @@ export const getDeanDetails = async(req, res) => {
 }
 
 export const EditDeanDetails = async (req, res) => {
+    const {dean_id} = req.body;
+    const isDeanUnique = await Deans.findOne({where: {dean_id: dean_id}});
+    if (isDeanUnique !== null) return res.status(400).json({msg: "Dean ID is already used"});
     try {
         await Deans.update(req.body, {
             where: {
@@ -143,6 +159,9 @@ export const EditDeanDetails = async (req, res) => {
 }
 
 export const UpdateDean = async (req, res) => {
+    const {dean_id} = req.body;
+    const isDeanUnique = await Deans.findOne({where: {dean_id: dean_id}});
+    if (isDeanUnique !== null) return res.status(400).json({msg: "Dean ID is already used"});
     try {
         await Deans.update(req.body, {
             where: {
