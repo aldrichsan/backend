@@ -6,6 +6,7 @@ import ScholarshipInfo from "../models/ScholarshipInfoModel.js";
 import ReviewApplications from "../models/ReviewApplicationModel.js";
 import ApprovedApplications from "../models/ApprovedApplications.js";
 import RejectedApplications from "../models/RejectedApplicationModel.js";
+import { Op, Sequelize } from "sequelize";
  
  
 export const AdminRegister = async(req, res) => {
@@ -173,6 +174,21 @@ export const GetScholarships = async(req, res) => {
         console.log(error);
     }
 }
+export const GetSearchedScholarships = async(req, res) => {
+    try {
+        const scholarships = await ScholarshipInfo.findAll({
+            attributes:['id', 'scholarship_name', 'description', 'requirements'],
+            where:{ 
+                scholarship_name:{
+                    [Op.like]: '%' + req.params.id + '%'
+                } 
+            }
+        });
+        res.json(scholarships).status(200)
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 export const GetScholarship = async(req, res) => {
     try {
@@ -224,6 +240,21 @@ export const GetReviewedApplications = async (req, res) => {
     });
     res.json(reviewed_applications);
 }
+export const GetReviewedSearchedApplications = async (req, res) => {
+    const reviewed_applications = await ReviewApplications.findAll({
+        where:{
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+        }
+    });
+    res.json(reviewed_applications);
+}
 
 export const GetDepartmentFilteredReviewedApplications = async (req, res) => {
     const reviewed_applications = await ReviewApplications.findAll({
@@ -238,6 +269,78 @@ export const GetCourseFilteredReviewedApplications = async (req, res) => {
     const reviewed_applications = await ReviewApplications.findAll({
         where:{
             course: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetMultipleFilteredReviewedApplications = async (req, res) => {
+    const reviewed_applications = await ReviewApplications.findAll({
+        where:{
+            department: req.params.dept,
+            course: req.params.course,
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+            
+        }
+    });
+    res.json(reviewed_applications);
+}
+export const GetNameDeptFilteredReviewedApplications = async (req, res) => {
+    const reviewed_applications = await ReviewApplications.findAll({
+        where:{
+            department: req.params.dept,
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+            
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetMultipleFilteredApprovedApplications = async (req, res) => {
+    const reviewed_applications = await ApprovedApplications.findAll({
+        where:{
+            department: req.params.dept,
+            course: req.params.course,
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+            
+        }
+    });
+    res.json(reviewed_applications);
+}
+export const GetNameDeptFilteredApprovedApplications = async (req, res) => {
+    const reviewed_applications = await ApprovedApplications.findAll({
+        where:{
+            department: req.params.dept,
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+            
         }
     });
     res.json(reviewed_applications);
@@ -390,6 +493,23 @@ export const GetApprovedApplications = async (req, res) => {
     res.json(reviewed_applications);
 }
 
+export const GetApprovedSearchedApplications = async (req, res) => {
+    const reviewed_applications = await ApprovedApplications.findAll({
+        where:{
+
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+        }
+    });
+    res.json(reviewed_applications);
+}
+
 export const GetDepartmentFilteredApprovedApplications = async (req, res) => {
     const reviewed_applications = await ApprovedApplications.findAll({
         where:{
@@ -398,6 +518,7 @@ export const GetDepartmentFilteredApprovedApplications = async (req, res) => {
     });
     res.json(reviewed_applications);
 }
+
 
 export const GetCourseFilteredApprovedApplications = async (req, res) => {
     const reviewed_applications = await ApprovedApplications.findAll({

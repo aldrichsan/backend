@@ -5,7 +5,9 @@ import jwt from "jsonwebtoken";
 import SubmittedApplications from "../models/SubmittedApplicationModel.js";
 import ReviewApplications from "../models/ReviewApplicationModel.js";
 import RejectedApplications from "../models/RejectedApplicationModel.js";
- 
+import { Op, Sequelize } from "sequelize";
+
+
 export const getDeans = async(req, res) => {
     try {
         const dean = await Deans.findAll({
@@ -144,12 +146,12 @@ export const getDeanDetails = async(req, res) => {
 
 export const EditDeanDetails = async (req, res) => {
     const {dean_id} = req.body;
-    const isDeanUnique = await Deans.findOne({where: {dean_id: dean_id}});
-    if (isDeanUnique !== null) return res.status(400).json({msg: "Dean ID is already used"});
+    const isDeanUnique = await Deans.findAll({where: {dean_id: dean_id}});
+    if (isDeanUnique.length !== 1) return res.status(400).json({msg: "Dean ID is already used"});
     try {
         await Deans.update(req.body, {
             where: {
-                dean_id: req.params.id
+                id: req.params.id
             }
         });
         res.json(req.body);
@@ -159,9 +161,6 @@ export const EditDeanDetails = async (req, res) => {
 }
 
 export const UpdateDean = async (req, res) => {
-    const {dean_id} = req.body;
-    const isDeanUnique = await Deans.findOne({where: {dean_id: dean_id}});
-    if (isDeanUnique !== null) return res.status(400).json({msg: "Dean ID is already used"});
     try {
         await Deans.update(req.body, {
             where: {
@@ -243,6 +242,72 @@ export const GetFilteredSubmittedApplications = async (req, res) => {
     res.json(submitted_applications);
 }
 
+export const GetSearchedSubmittedApplications = async (req, res) => {
+    const submitted_applications = await SubmittedApplications.findAll({
+        where:{
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+        }
+    });
+    res.json(submitted_applications);
+}
+
+export const GetNamedFilterSubmittedApplications = async (req, res) => {
+    const submitted_applications = await SubmittedApplications.findAll({
+        where:{
+            course: req.params.course,
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+        }
+    });
+    res.json(submitted_applications);
+}
+
+export const GetSearchedReviewedApplications = async (req, res) => {
+    const submitted_applications = await ReviewApplications.findAll({
+        where:{
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+        }
+    });
+    res.json(submitted_applications);
+}
+
+export const GetNamedFilterReviewedApplications = async (req, res) => {
+    const submitted_applications = await ReviewApplications.findAll({
+        where:{
+            course: req.params.course,
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+        }
+    });
+    res.json(submitted_applications);
+}
+
 export const GetSpecificApplication = async (req, res) => {
     const specific_application = await SubmittedApplications.findOne({
         where:{
@@ -250,6 +315,25 @@ export const GetSpecificApplication = async (req, res) => {
         }
     });
     res.json(specific_application);
+}
+
+
+export const GetDeanApprovedApplications = async (req, res) => {
+    const reviewed_applications = await ReviewApplications.findAll({
+        where:{
+            department: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
+}
+
+export const GetSpecificDeanApprovedApplication = async (req, res) => {
+    const reviewed_applications = await ReviewApplications.findOne({
+        where:{
+            id: req.params.id
+        }
+    });
+    res.json(reviewed_applications);
 }
 
 

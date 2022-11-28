@@ -152,12 +152,12 @@ export const getStudentDetails = async(req, res) => {
 
 export const EditStudentDetails = async (req, res) => {
     const {student_id} = req.body;
-    const isStudentUnique = await Students.findOne({where: {student_id: student_id}});
-    if (isStudentUnique !== null) return res.status(400).json({msg: "Student ID is already used"});
+    const isStudentUnique = await Students.findAll({where: {student_id: student_id}});
+    if (isStudentUnique.length !== 1) return res.status(400).json({msg: "Student ID is already used"});
     try {
         await Students.update(req.body, {
             where: {
-                student_id: req.params.id
+                id: req.params.id
             }
         });
         res.json(req.body);
@@ -168,9 +168,7 @@ export const EditStudentDetails = async (req, res) => {
 
 
 export const UpdateStudent = async (req, res) => {
-    const {student_id} = req.body;
-    const isStudentUnique = await Students.findOne({where: {student_id: student_id}});
-    if (isStudentUnique !== null) return res.status(400).json({msg: "Student ID is already used"});
+    
     try {
         await Students.update(req.body, {
             where: {

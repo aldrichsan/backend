@@ -38,13 +38,13 @@ const SubmittedApplications = db.define('submitted_applications',{
         type: DataTypes.STRING
     },
     student_sign:{
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT('medium')
     },
     dean_sign:{
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT('medium')
     },
     admin_sign:{
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT('medium')
     },
     scholarship_type:{
         type: DataTypes.STRING

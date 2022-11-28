@@ -42,7 +42,7 @@ const Students = db.define('students',{
 });
  
 (async () => {
-    await db.authenticate();
+    await db.sync();
 })();
  
 export default Students;
