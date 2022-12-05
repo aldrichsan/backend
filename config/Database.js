@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
  
-const db = new Sequelize('online_wup_scholar', 'root', '', {
+const db = new Sequelize('wup_scholar_db', 'root', '', {
     host: "localhost",
     dialect: "mysql",
     port: '3306'

@@ -9,6 +9,9 @@ const Announcements = db.define('announcements',{
     },
     body:{
         type: DataTypes.TEXT
+    },
+    image:{
+        type: DataTypes.TEXT('medium')
     }
 },{
     freezeTableName:true

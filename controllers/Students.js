@@ -6,11 +6,37 @@ import jwt from "jsonwebtoken";
 import RejectedApplications from "../models/RejectedApplicationModel.js";
 import ApprovedApplications from "../models/ApprovedApplications.js";
 import ReviewApplications from "../models/ReviewApplicationModel.js";
+import { Op, Sequelize } from "sequelize";
+
  
 export const getStudents = async(req, res) => {
     try {
         const student = await Students.findAll({
             attributes:['id', 'student_id','last_name','first_name','middle_name', 'contact_no', 'email', 'department', 'course', 'year']
+        });
+        res.json(student);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getSearchedStudents = async(req, res) => {
+    try {
+        const student = await Students.findAll({
+            attributes:['id', 'student_id','last_name','first_name','middle_name', 'contact_no', 'email', 'department', 'course', 'year'],
+            where:{
+                [Op.or]:[
+                    {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                    {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                    {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                    Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                        [Op.like]: '%' + req.params.id + '%'
+                    }),
+                    Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
+                        [Op.like]: '%' + req.params.id + '%'
+                    })
+                ]
+            }
         });
         res.json(student);
     } catch (error) {
@@ -168,7 +194,6 @@ export const EditStudentDetails = async (req, res) => {
 
 
 export const UpdateStudent = async (req, res) => {
-    
     try {
         await Students.update(req.body, {
             where: {
@@ -219,6 +244,7 @@ export const StudentLogout = async(req, res) => {
 
 export const StudentChangePassword = async (req, res) => {
     const {student_id, password, confPassword} = req.body
+    if(password < 8) return res.status(400).json({msg: "Password should be more than 8 characters"});
     if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);

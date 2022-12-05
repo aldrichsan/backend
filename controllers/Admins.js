@@ -96,11 +96,12 @@ export const AdminLogout = async(req, res) => {
 // Announcements
 
 export const AddAnnouncements = async(req, res) => {
-    const {title, body} = req.body;
+    const {title, body, image} = req.body;
     try {
         await Announcements.create({
             title: title,
-            body: body
+            body: body,
+            image: image
         });
         res.json({msg: "Added an announcements"});
     } catch (error) {
@@ -111,7 +112,7 @@ export const AddAnnouncements = async(req, res) => {
 export const GetAnnouncements = async(req, res) => {
     try {
         const announcements = await Announcements.findAll({
-            attributes:['id', 'title','body']
+            attributes:['id', 'title','body', 'image']
         });
         res.json(announcements).status(200)
     } catch (error) {
@@ -249,6 +250,9 @@ export const GetReviewedSearchedApplications = async (req, res) => {
                 {last_name: {[Op.like]: '%' + req.params.id + '%'}},
                 Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
                     [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
                 })
             ]
         }
@@ -285,6 +289,9 @@ export const GetMultipleFilteredReviewedApplications = async (req, res) => {
                 {last_name: {[Op.like]: '%' + req.params.id + '%'}},
                 Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
                     [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
                 })
             ]
             
@@ -301,6 +308,9 @@ export const GetNameDeptFilteredReviewedApplications = async (req, res) => {
                 {first_name: {[Op.like]: '%' + req.params.id + '%'}},
                 {last_name: {[Op.like]: '%' + req.params.id + '%'}},
                 Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
                     [Op.like]: '%' + req.params.id + '%'
                 })
             ]
@@ -321,6 +331,9 @@ export const GetMultipleFilteredApprovedApplications = async (req, res) => {
                 {last_name: {[Op.like]: '%' + req.params.id + '%'}},
                 Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
                     [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
                 })
             ]
             
@@ -337,6 +350,9 @@ export const GetNameDeptFilteredApprovedApplications = async (req, res) => {
                 {first_name: {[Op.like]: '%' + req.params.id + '%'}},
                 {last_name: {[Op.like]: '%' + req.params.id + '%'}},
                 Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
                     [Op.like]: '%' + req.params.id + '%'
                 })
             ]
@@ -502,6 +518,9 @@ export const GetApprovedSearchedApplications = async (req, res) => {
                 {first_name: {[Op.like]: '%' + req.params.id + '%'}},
                 {last_name: {[Op.like]: '%' + req.params.id + '%'}},
                 Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
                     [Op.like]: '%' + req.params.id + '%'
                 })
             ]

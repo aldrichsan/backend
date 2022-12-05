@@ -224,6 +224,24 @@ export const DeanChangePassword = async (req, res) => {
     }  
 }
 
+export const DeanDetailsChangePassword = async (req, res) => {
+    const {password, confPassword, dean_id} = req.body
+    if(password < 8) return res.status(400).json({msg: "Password should be more than 8 characters"});
+    if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+    try {
+        await Deans.update({password: hashPassword}, {
+            where: {
+                dean_id: dean_id
+            }
+        });
+        res.json(req.body);
+    } catch (error) {
+        res.json({ msg: error.message });
+    }  
+}
+
 export const GetSubmittedApplications = async (req, res) => {
     const submitted_applications = await SubmittedApplications.findAll({
         where:{

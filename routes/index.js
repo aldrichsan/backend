@@ -15,7 +15,8 @@ import { getPendingStudents,
         IsScholarshipRejected,
         IsScholarshipApproved,
         IsScholarshipUnderReview,
-        IsScholarshipSubmitted } from "../controllers/Students.js";
+        IsScholarshipSubmitted, 
+        getSearchedStudents} from "../controllers/Students.js";
 import { StudentVerifyToken } from "../middleware/StudentVerifyToken.js";
 import { StudentRefreshToken } from "../controllers/StudentRefreshToken.js";
 
@@ -42,7 +43,8 @@ import { getPendingDeans,
       GetSearchedSubmittedApplications,
       GetNamedFilterSubmittedApplications,
       GetNamedFilterReviewedApplications,
-      GetSearchedReviewedApplications} from "../controllers/Deans.js";
+      GetSearchedReviewedApplications,
+      DeanDetailsChangePassword} from "../controllers/Deans.js";
 import { DeanVerifyToken } from "../middleware/DeanVerifyToken.js";
 import { DeanRefreshToken } from "../controllers/DeanRefreshToken.js";
 
@@ -99,6 +101,7 @@ router.get('/student/token', StudentRefreshToken);
 router.get('/scholarships/get/:id', GetScholarship);
 router.get('/student/details/:id', StudentVerifyToken, getStudentDetails);
 router.patch('/update/student/details/:id',StudentVerifyToken, EditStudentDetails);
+router.patch('/change/student/details/password',StudentVerifyToken, StudentChangePassword);
 router.post('/submit/student/application', CreateScholarshipApplication);
 router.delete('/student/logout', StudentLogout);
 // Check Application Status
@@ -114,6 +117,7 @@ router.post('/dean', DeanLogin);
 router.get('/dean/token', DeanRefreshToken);
 router.get('/dean/details/:id',DeanVerifyToken, getDeanDetails);
 router.patch('/update/dean/details/:id',DeanVerifyToken, EditDeanDetails);
+router.patch('/change/dean/details/password',DeanVerifyToken, DeanDetailsChangePassword);
 router.get('/dean/view/applications/dept/:id',DeanVerifyToken, GetSubmittedApplications);
 router.get('/dean/view/applications/course/:id',DeanVerifyToken, GetFilteredSubmittedApplications);
 router.get('/dean/view/applications/name/:id',DeanVerifyToken, GetSearchedSubmittedApplications);
@@ -138,6 +142,7 @@ router.delete('/admin/logout', AdminLogout);
 
 //CRUD FOR STUDENTS AND DEANS
 router.get('/students/get',AdminVerifyToken, getStudents);
+router.get('/students/get/:id',AdminVerifyToken, getSearchedStudents);
 router.get('/pendingstudents/get',AdminVerifyToken, getPendingStudents);
 router.post('/approve/registration/student',AdminVerifyToken, ApproveStudentRegister);
 router.delete('/reject/registration/student/:id',AdminVerifyToken, RejectPendingStudent);
