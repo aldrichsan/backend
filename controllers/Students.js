@@ -8,6 +8,28 @@ import ApprovedApplications from "../models/ApprovedApplications.js";
 import ReviewApplications from "../models/ReviewApplicationModel.js";
 import { Op, Sequelize } from "sequelize";
 
+export const isOnSubmitted = async(req, res) => {
+    const applications_submitted = await SubmittedApplications.findAll(
+        {
+            attributes:['student_id'],
+            where: { student_id: req.params.id } 
+        });
+
+    const applications_review = await ReviewApplications.findAll(
+        {
+            attributes:['student_id'],
+            where: { student_id: req.params.id } 
+        });
+
+    const applications_approved = await ApprovedApplications.findAll(
+        {
+            attributes:['student_id'],
+            where: { student_id: req.params.id } 
+        });
+    const all_applications = [ ...applications_submitted, ...applications_review, ...applications_approved];
+    res.json(all_applications);
+}
+
  
 export const getStudents = async(req, res) => {
     try {
@@ -310,8 +332,11 @@ export const CreateScholarshipApplication = async (req, res) => {
         req_9,
         req_10
     } = req.body;
-    
+
     try {
+        // if(isOnSubmitted(student_id)){ return res.status(400).json({msg: "You already have an application submitted"});}
+        // if(isOnReview(student_id)){ return res.status(400).json({msg: "You already have an application submitted"});}
+        // if(isOnApproved(student_id)){ return res.status(400).json({msg: "You already have an application submitted"});}
         await SubmittedApplications.create({
             last_name: last_name, 
             first_name: first_name, 

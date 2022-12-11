@@ -1,4 +1,5 @@
 import express from "express";
+
 import { getPendingStudents,
         getStudents,
         StudentRegister,
@@ -16,7 +17,8 @@ import { getPendingStudents,
         IsScholarshipApproved,
         IsScholarshipUnderReview,
         IsScholarshipSubmitted, 
-        getSearchedStudents} from "../controllers/Students.js";
+        getSearchedStudents,
+        isOnSubmitted} from "../controllers/Students.js";
 import { StudentVerifyToken } from "../middleware/StudentVerifyToken.js";
 import { StudentRefreshToken } from "../controllers/StudentRefreshToken.js";
 
@@ -90,8 +92,6 @@ import { AdminVerifyToken } from "../middleware/AdminVerifyToken.js";
 
  
 const router = express.Router();
-router.use(express.urlencoded());
-router.use(express.json())
 
 
 // Student
@@ -102,6 +102,7 @@ router.get('/scholarships/get/:id', GetScholarship);
 router.get('/student/details/:id', StudentVerifyToken, getStudentDetails);
 router.patch('/update/student/details/:id',StudentVerifyToken, EditStudentDetails);
 router.patch('/change/student/details/password',StudentVerifyToken, StudentChangePassword);
+router.get('/already/submitted/:id', StudentVerifyToken, isOnSubmitted)
 router.post('/submit/student/application', CreateScholarshipApplication);
 router.delete('/student/logout', StudentLogout);
 // Check Application Status

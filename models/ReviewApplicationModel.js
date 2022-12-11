@@ -163,7 +163,7 @@ const ReviewApplications = db.define('review_applications',{
 });
  
 (async () => {
-    await db.authenticate();
+    await db.sync();
 })();
  
 export default ReviewApplications;
