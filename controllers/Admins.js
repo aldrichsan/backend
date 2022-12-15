@@ -63,6 +63,8 @@ export const AdminLogin = async(req, res) => {
             }
         });
         res.cookie('refreshToken', refreshToken,{
+            sameSite : "none",
+            secure: true,
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000
         });
@@ -529,6 +531,7 @@ export const GetApprovedSearchedApplications = async (req, res) => {
     res.json(reviewed_applications);
 }
 
+
 export const GetDepartmentFilteredApprovedApplications = async (req, res) => {
     const reviewed_applications = await ApprovedApplications.findAll({
         where:{
@@ -586,7 +589,6 @@ export const AdminCreateRejectedApplication = async (req, res) => {
         reason_of_rejection,
         student_id
     } = req.body;
-    
     try {
         await RejectedApplications.create({
             id: id, 
@@ -612,6 +614,47 @@ export const GetRejectedApplications = async (req, res) => {
     const reviewed_applications = await RejectedApplications.findAll({
     });
     res.json(reviewed_applications);
+}
+
+export const GetRejectedSearchedApplications = async (req, res) => {
+    const rejected_applications = await RejectedApplications.findAll({
+        where:{
+
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+        }
+    });
+    res.json(rejected_applications);
+}
+
+export const GetNameDeptFilteredRejectedApplications = async (req, res) => {
+    const rejected_applications = await RejectedApplications.findAll({
+        where:{
+            department: req.params.dept,
+            [Op.or]:[
+                {student_id:{[Op.like]: '%' + req.params.id + '%'}},
+                {first_name: {[Op.like]: '%' + req.params.id + '%'}},
+                {last_name: {[Op.like]: '%' + req.params.id + '%'}},
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                })
+            ]
+            
+        }
+    });
+    res.json(rejected_applications);
 }
 
 export const GetDepartmentFilteredRejectedApplications = async (req, res) => {

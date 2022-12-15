@@ -85,7 +85,9 @@ import { AddAnnouncements,
      GetMultipleFilteredReviewedApplications,
      GetNameDeptFilteredReviewedApplications,
      GetNameDeptFilteredApprovedApplications,
-     GetMultipleFilteredApprovedApplications} from "../controllers/Admins.js";
+     GetMultipleFilteredApprovedApplications,
+     GetRejectedSearchedApplications,
+     GetNameDeptFilteredRejectedApplications} from "../controllers/Admins.js";
 import { AdminRefreshToken } from "../controllers/AdminRefreshToken.js";
 import { AdminVerifyToken } from "../middleware/AdminVerifyToken.js";
 
@@ -127,7 +129,7 @@ router.get('/dean/view/applications/approved/name/:id',DeanVerifyToken, GetSearc
 router.get('/dean/view/applications/approved/filter/:id/:course',DeanVerifyToken, GetNamedFilterReviewedApplications);
 router.get('/dean/view/approved/applications/dept/:id',DeanVerifyToken, GetDeanApprovedApplications);
 router.get('/dean/view/approved/applications/course/:id', DeanVerifyToken, GetCourseFilteredReviewedApplications);
-router.get('/dean/applications/review/:id',DeanVerifyToken, GetSpecificApplication);
+router.get('/dean/applications/review/:id', DeanVerifyToken, GetSpecificApplication);
 router.get('/dean/view/approved/application/:id',DeanVerifyToken, GetSpecificDeanApprovedApplication);
 router.post('/create/review/application',DeanVerifyToken, CreateReviewApplication);
 router.post('/create/rejected/application',DeanVerifyToken, CreateRejectedApplication);
@@ -160,7 +162,7 @@ router.patch('/change/dean/password/:id',AdminVerifyToken, DeanChangePassword);
 router.delete('/delete/dean/:id',AdminVerifyToken, DeleteDean);
 
 // CRUD Announcements
-router.post('/announcements/add',AdminVerifyToken, AddAnnouncements);
+router.post('/announcements/add', AddAnnouncements);
 router.get('/announcements/get', GetAnnouncements);
 router.patch('/announcements/update/:id',AdminVerifyToken, UpdateAnnouncement);
 router.delete('/announcements/delete/:id',AdminVerifyToken, DeleteAnnouncement);
@@ -196,6 +198,8 @@ router.delete('/admin/delete/approved/application/:id',AdminVerifyToken,  Delete
 
 router.post('/admin/create/rejected/application',AdminVerifyToken, AdminCreateRejectedApplication);
 router.get('/admin/view/rejected/applications',AdminVerifyToken, GetRejectedApplications);
+router.get('/admin/search/rejected/applications/:id',AdminVerifyToken,  GetRejectedSearchedApplications);
+router.get('/admin/name/dept/rejected/applications/:id/:dept',AdminVerifyToken,  GetNameDeptFilteredRejectedApplications);
 router.get('/admin/view/rejected/applications/department/:id',AdminVerifyToken, GetDepartmentFilteredRejectedApplications);
 router.get('/admin/view/rejected/application/:id',AdminVerifyToken, GetSpecificRejectedApplication);
 router.delete('/admin/delete/rejected/application/:id',AdminVerifyToken, DeleteRejectedApplication);

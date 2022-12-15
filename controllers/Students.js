@@ -179,6 +179,8 @@ export const StudentLogin = async(req, res) => {
             }
         });
         res.cookie('refreshToken', refreshToken,{
+            sameSite : "none",
+            secure: true,
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000
         });

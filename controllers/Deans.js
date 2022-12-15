@@ -125,6 +125,8 @@ export const DeanLogin = async(req, res) => {
             }
         });
         res.cookie('refreshToken', refreshToken,{
+            sameSite : "none",
+            secure: true,
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000
         });
@@ -269,6 +271,9 @@ export const GetSearchedSubmittedApplications = async (req, res) => {
                 {last_name: {[Op.like]: '%' + req.params.id + '%'}},
                 Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
                     [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
                 })
             ]
         }
@@ -285,6 +290,9 @@ export const GetNamedFilterSubmittedApplications = async (req, res) => {
                 {first_name: {[Op.like]: '%' + req.params.id + '%'}},
                 {last_name: {[Op.like]: '%' + req.params.id + '%'}},
                 Sequelize.where(Sequelize.fn('concat', Sequelize.col('first_name'), ' ', Sequelize.col('last_name')), {
+                    [Op.like]: '%' + req.params.id + '%'
+                }),
+                Sequelize.where(Sequelize.fn('concat', Sequelize.col('last_name'), ' ', Sequelize.col('first_name')), {
                     [Op.like]: '%' + req.params.id + '%'
                 })
             ]
